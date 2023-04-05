@@ -1,39 +1,54 @@
-import { View, Text, StyleSheet, Button, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  Image,
+  TouchableOpacity,
+  Platform,
+  TouchableNativeFeedback,
+} from "react-native";
 import React from "react";
 import colors from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
 
 const ProductItem = ({ item }) => {
+  let TouchableComponent = TouchableOpacity;
+  if (Platform.OS === "android" && Platform.Version >= 21) {
+    TouchableComponent = TouchableNativeFeedback;
+  }
   const { navigate } = useNavigation();
   const viewDetails = () => {
     navigate("ProductDetail", {
-        productId: item.id,
-        title: item.title
+      productId: item.id,
+      title: item.title,
     });
   };
   const addToCart = () => {};
   return (
-    <View style={styles.container}>
-      <View style={styles.imgContainer}>
-        <Image style={styles.image} source={{ uri: item.imageUrl }} />
+    <TouchableComponent onPress={viewDetails} useForeground>
+      <View style={styles.container}>
+        <View style={styles.imgContainer}>
+          <Image style={styles.image} source={{ uri: item.imageUrl }} />
+        </View>
+        <View style={styles.details}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+        </View>
+        <View style={styles.actions}>
+          <Button
+            title="View Details"
+            onPress={viewDetails}
+            color={colors.primary}
+          />
+          <Button
+            title="Add to cart"
+            onPress={addToCart}
+            color={colors.primary}
+          />
+        </View>
       </View>
-      <View style={styles.details}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-      </View>
-      <View style={styles.actions}>
-        <Button
-          title="View Details"
-          onPress={viewDetails}
-          color={colors.primary}
-        />
-        <Button
-          title="Add to cart"
-          onPress={addToCart}
-          color={colors.primary}
-        />
-      </View>
-    </View>
+    </TouchableComponent>
   );
 };
 
