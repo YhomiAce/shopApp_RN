@@ -4,6 +4,7 @@ import ProductsOverviewScreen from "../screens/shop/ProductsOverviewScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import colors from "../constants/colors";
 import ProductDetailScreen from "../screens/shop/ProductDetailScreen";
+import CartScreen from "../screens/shop/CartScreen";
 
 const ShopStack = createNativeStackNavigator();
 
@@ -13,6 +14,12 @@ const ShopNavigation = () => {
       backgroundColor: Platform.OS === "android" ? colors.primary : "",
     },
     headerTintColor: Platform.OS === "android" ? "white" : colors.primary,
+    headerTitleStyle: {
+      fontFamily: "open-sans-bold",
+    },
+    headerBackTitleStyle: {
+      fontFamily: "open-sans",
+    },
   };
   return (
     <NavigationContainer>
@@ -31,6 +38,7 @@ const ShopNavigation = () => {
           component={ProductDetailScreen}
           options={({ route }) => ({ title: route.params.title })}
         />
+        <ShopStack.Screen name="Cart" component={CartScreen} />
       </ShopStack.Navigator>
     </NavigationContainer>
   );

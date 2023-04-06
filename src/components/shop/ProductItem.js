@@ -11,8 +11,11 @@ import {
 import React from "react";
 import colors from "../../constants/colors";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import * as cartActions from "../../store/actions/cart";
 
 const ProductItem = ({ item }) => {
+  const dispatch = useDispatch();
   let TouchableComponent = TouchableOpacity;
   if (Platform.OS === "android" && Platform.Version >= 21) {
     TouchableComponent = TouchableNativeFeedback;
@@ -24,7 +27,9 @@ const ProductItem = ({ item }) => {
       title: item.title,
     });
   };
-  const addToCart = () => {};
+  const addToCart = () => {
+    dispatch(cartActions.addToCart(item));
+  };
   return (
     <TouchableComponent onPress={viewDetails} useForeground>
       <View style={styles.container}>
@@ -78,10 +83,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     marginVertical: 4,
+    fontFamily: "open-sans-bold",
   },
   price: {
     fontSize: 14,
     color: "#888",
+    fontFamily: "open-sans",
   },
   actions: {
     flexDirection: "row",

@@ -1,10 +1,13 @@
-import { legacy_createStore as createStore , combineReducers} from 'redux';
-import ProductReducer from './reducers/products';
+import { legacy_createStore as createStore, combineReducers } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import ProductReducer from "./reducers/products";
+import CartReducer from "./reducers/cart";
 
 const rootReducer = combineReducers({
-    products: ProductReducer
+  products: ProductReducer,
+  carts: CartReducer,
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, composeWithDevTools());
 
 export default store;
