@@ -1,5 +1,5 @@
 import CartItem from "../../models/cart-item";
-import { ADD_TO_CART } from "../actions/cart";
+import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
 
 const initialState = {
   items: [],
@@ -16,7 +16,7 @@ const CartReducer = (state = initialState, action) => {
       if (exist) {
         // already have item in the cart
         const updatedCartItem = new CartItem(
-          exist.id,
+          exist.productId,
           exist.quantity + 1,
           payload.price,
           payload.title,
@@ -42,6 +42,33 @@ const CartReducer = (state = initialState, action) => {
         ...state,
         items: oldCarts,
         totalAmount: state.totalAmount + payload.price,
+      };
+
+    case REMOVE_FROM_CART:
+      let oldItems = [...state.items];
+      console.log(oldItems);
+      const cartItem = oldItems.find((item) => item.productId === payload.id);
+
+      if (cartItem.quantity > 1) {
+        // reduce the quantity by 1
+        const updatedCartItem = new CartItem(
+          cartItem.productId,
+          cartItem.quantity - 1,
+          cartItem.productPrice,
+          cartItem.productTitle,
+          cartItem.sum - cartItem.productPrice
+        );
+        const cartIndex = oldItems.findIndex(
+          (item) => item.productId === payload.id
+        );
+        oldItems[cartIndex] = updatedCartItem;
+      } else {
+        oldItems = oldItems.filter(item => item.productId !== payload.id)
+      }
+      return {
+        ...state,
+        items: oldItems,
+        totalAmount: state.totalAmount - cartItem.productPrice,
       };
     default:
       return state;
