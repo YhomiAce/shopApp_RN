@@ -1,5 +1,6 @@
 import CartItem from "../../models/cart-item";
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
+import { ADD_ORDER } from "../actions/orders";
 
 const initialState = {
   items: [],
@@ -63,13 +64,15 @@ const CartReducer = (state = initialState, action) => {
         );
         oldItems[cartIndex] = updatedCartItem;
       } else {
-        oldItems = oldItems.filter(item => item.productId !== payload.id)
+        oldItems = oldItems.filter((item) => item.productId !== payload.id);
       }
       return {
         ...state,
         items: oldItems,
         totalAmount: state.totalAmount - cartItem.productPrice,
       };
+    case ADD_ORDER:
+      return initialState;
     default:
       return state;
   }

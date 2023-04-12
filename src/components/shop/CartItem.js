@@ -10,10 +10,9 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import * as cartActions from "../../store/actions/cart";
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, showButton = true }) => {
   const dispatch = useDispatch();
   const onRemove = () => {
-    console.log("remove", item);
     dispatch(cartActions.removeFromCart(item.productId));
   };
   return (
@@ -24,13 +23,15 @@ const CartItem = ({ item }) => {
       </View>
       <View style={styles.itemData}>
         <Text style={styles.mainText}>${item.sum.toFixed(2)}</Text>
-        <TouchableOpacity onPress={onRemove} style={styles.deleteButton}>
-          <Ionicons
-            name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
-            size={23}
-            color="red"
-          />
-        </TouchableOpacity>
+        {showButton && (
+          <TouchableOpacity onPress={onRemove} style={styles.deleteButton}>
+            <Ionicons
+              name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
+              size={23}
+              color="red"
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal: 20,
+    width: "90%",
   },
   itemData: {
     flexDirection: "row",

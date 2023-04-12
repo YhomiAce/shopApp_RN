@@ -1,13 +1,14 @@
 import { View, Text, StyleSheet, Button } from "react-native";
 import React from "react";
 import { FlatList } from "react-native-gesture-handler";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import colors from "../../constants/colors";
 import CartItem from "../../components/shop/CartItem";
+import * as orderActions from "../../store/actions/orders";
 
 const CartScreen = () => {
   const { totalAmount, items } = useSelector((state) => state.carts);
-  console.log(items);
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.screen}>
@@ -19,6 +20,9 @@ const CartScreen = () => {
           color={colors.accent}
           title="Order Now"
           disabled={items.length === 0}
+          onPress={() => {
+            dispatch(orderActions.addOrder(items, totalAmount));
+          }}
         />
       </View>
       <FlatList
