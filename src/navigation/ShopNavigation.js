@@ -6,6 +6,7 @@ import colors from "../constants/colors";
 import ProductDetailScreen from "../screens/shop/ProductDetailScreen";
 import CartScreen from "../screens/shop/CartScreen";
 import DrawerNavigation from "./DrawerNavigation";
+import EditProductScreen from "../screens/user/EditProductScreen";
 
 const ShopStack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ const ShopNavigation = () => {
         options={({ route }) => ({ title: route.params.title })}
       />
       <ShopStack.Screen name="Cart" component={CartScreen} />
+      <ShopStack.Screen name="EditProduct" component={EditProductScreen} />
     </ShopStack.Navigator>
   );
 };

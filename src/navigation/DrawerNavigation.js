@@ -5,6 +5,7 @@ import colors from "../constants/colors";
 import { Platform } from "react-native";
 import ProductsOverviewScreen from "../screens/shop/ProductsOverviewScreen";
 import { Ionicons } from "@expo/vector-icons";
+import UserProductsScreen from "../screens/user/UserProductsScreen";
 
 const DrawerStack = createDrawerNavigator();
 
@@ -43,6 +44,19 @@ const DrawerNavigation = () => {
           drawerIcon: ({ focused, size, color }) => (
             <Ionicons
               name={Platform.OS === "android" ? "md-list" : "ios-list"}
+              size={size}
+              color={focused ? colors.primary : color}
+            />
+          ),
+        }}
+      />
+      <DrawerStack.Screen
+        name="UserProducts"
+        component={UserProductsScreen}
+        options={{
+          drawerIcon: ({ focused, size, color }) => (
+            <Ionicons
+              name={Platform.OS === "android" ? "md-create" : "ios-create"}
               size={size}
               color={focused ? colors.primary : color}
             />

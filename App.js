@@ -5,7 +5,6 @@ import ShopNavigation from "./src/navigation/ShopNavigation";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { useState } from "react";
-import DrawerNavigation from "./src/navigation/DrawerNavigation";
 import { NavigationContainer } from "@react-navigation/native";
 
 const fetchFonts = () => {

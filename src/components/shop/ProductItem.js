@@ -9,30 +9,19 @@ import {
   TouchableNativeFeedback,
 } from "react-native";
 import React from "react";
-import colors from "../../constants/colors";
-import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
-import * as cartActions from "../../store/actions/cart";
+import Card from "../UI/Card";
 
-const ProductItem = ({ item }) => {
-  const dispatch = useDispatch();
+const ProductItem = (props) => {
+  const {item, onSelect} = props;
+ 
   let TouchableComponent = TouchableOpacity;
   if (Platform.OS === "android" && Platform.Version >= 21) {
     TouchableComponent = TouchableNativeFeedback;
   }
-  const { navigate } = useNavigation();
-  const viewDetails = () => {
-    navigate("ProductDetail", {
-      productId: item.id,
-      title: item.title,
-    });
-  };
-  const addToCart = () => {
-    dispatch(cartActions.addToCart(item));
-  };
+  
   return (
-    <TouchableComponent onPress={viewDetails} useForeground>
-      <View style={styles.container}>
+    <TouchableComponent onPress={onSelect} useForeground>
+      <Card style={styles.container}>
         <View style={styles.imgContainer}>
           <Image style={styles.image} source={{ uri: item.imageUrl }} />
         </View>
@@ -41,30 +30,15 @@ const ProductItem = ({ item }) => {
           <Text style={styles.price}>${item.price.toFixed(2)}</Text>
         </View>
         <View style={styles.actions}>
-          <Button
-            title="View Details"
-            onPress={viewDetails}
-            color={colors.primary}
-          />
-          <Button
-            title="Add to cart"
-            onPress={addToCart}
-            color={colors.primary}
-          />
+          {props.children}
         </View>
-      </View>
+      </Card>
     </TouchableComponent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    shadowColor: "black",
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    borderRadius: 10,
     backgroundColor: "#fff",
     height: 300,
     margin: 20,

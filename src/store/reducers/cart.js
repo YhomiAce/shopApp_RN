@@ -1,6 +1,7 @@
 import CartItem from "../../models/cart-item";
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
 import { ADD_ORDER } from "../actions/orders";
+import { DELETE_PRODUCT } from "../actions/products";
 
 const initialState = {
   items: [],
@@ -12,7 +13,6 @@ const CartReducer = (state = initialState, action) => {
   switch (type) {
     case ADD_TO_CART:
       let oldCarts = [...state.items];
-      console.log(payload.id);
       const exist = oldCarts.find((item) => item.productId === payload.id);
       if (exist) {
         // already have item in the cart
@@ -47,7 +47,6 @@ const CartReducer = (state = initialState, action) => {
 
     case REMOVE_FROM_CART:
       let oldItems = [...state.items];
-      console.log(oldItems);
       const cartItem = oldItems.find((item) => item.productId === payload.id);
 
       if (cartItem.quantity > 1) {
@@ -73,6 +72,19 @@ const CartReducer = (state = initialState, action) => {
       };
     case ADD_ORDER:
       return initialState;
+    case DELETE_PRODUCT:
+      let oldCartItems = [...state.items];
+      let oldTotalAmunt = state.totalAmount;
+      const itemExist = oldCartItems.find((item) => item.productId === payload.id);
+      if (itemExist) {
+       oldCartItems = oldCartItems.filter((item) => item.productId !== payload.id);
+        oldTotalAmunt = oldTotalAmunt - itemExist.sum;
+      }
+      return {
+        ...state,
+        items: oldCartItems,
+        totalAmount: oldTotalAmunt,
+      };
     default:
       return state;
   }
