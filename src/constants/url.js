@@ -1,0 +1,1 @@
+export const URL = 'https://rnshopapp-f9de4-default-rtdb.firebaseio.com';

@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Button } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, Button, ActivityIndicator } from "react-native";
+import React, { useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import colors from "../../constants/colors";
@@ -10,20 +10,27 @@ import Card from "../../components/UI/Card";
 const CartScreen = () => {
   const { totalAmount, items } = useSelector((state) => state.carts);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState(null);
+  const orderNowHandler = async() => {
+    setIsLoading(true)
+    await dispatch(orderActions.addOrder(items, totalAmount));
+    setIsLoading(false);
+  }
   return (
     <View style={styles.screen}>
       <Card style={styles.summary}>
         <Text style={styles.summaryText}>
           Total: <Text style={styles.amount}>${totalAmount.toFixed(2)}</Text>
         </Text>
+        {isLoading ? <ActivityIndicator size="small" color={colors.primary} /> :
         <Button
           color={colors.accent}
           title="Order Now"
           disabled={items.length === 0}
-          onPress={() => {
-            dispatch(orderActions.addOrder(items, totalAmount));
-          }}
+          onPress={orderNowHandler}
         />
+      }
       </Card>
       <FlatList
         data={items}

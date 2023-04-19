@@ -1,3 +1,4 @@
+import { URL } from "../../constants/url";
 import Product from "../../models/product";
 
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
@@ -5,7 +6,6 @@ export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const FETCH_PRODUCTS = "FETCH_PRODUCTS";
 
-const URL = 'https://rnshopapp-f9de4-default-rtdb.firebaseio.com';
 
 export const deleteProduct = (productId) => {
   return async dispatch => {
@@ -34,7 +34,7 @@ export const deleteProduct = (productId) => {
 export const createProduct = (payload) => {
   return async dispatch => {
     try {
-      const response = await fetch(`${URL}/products.jso`, {
+      const response = await fetch(`${URL}/products.json`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

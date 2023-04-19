@@ -14,24 +14,27 @@ const ProductsOverviewScreen = () => {
   const { setOptions, navigate, addListener } = useNavigation();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
   const loadProducts = async () => {
     setError(null)
-    setIsLoading(true)
+    setIsRefreshing(true)
     try {
       await dispatch(productActions.fetchProducts())
     } catch (error) {
       setError(error.message)
     }
-    setIsLoading(false)
+    // setIsLoading(false)
+    setIsRefreshing(false)
   }
   useEffect(() => {
-    loadProducts();
+    setIsLoading(true)
+    loadProducts().then(() => setIsLoading(false));
   }, [dispatch])
 
   useEffect(() => {
-    const susbscribtion = addListener("focus", loadProducts);
+   addListener("focus", loadProducts);
   }, [addListener])
 
   React.useLayoutEffect(() => {
@@ -84,6 +87,8 @@ const ProductsOverviewScreen = () => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       keyExtractor={(item) => item.id}
       renderItem={(itemData) => (
