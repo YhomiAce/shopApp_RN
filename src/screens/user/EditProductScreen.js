@@ -3,19 +3,19 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TextInput,
   Platform,
   Alert,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState, useCallback, useReducer } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import { useDispatch, useSelector } from "react-redux";
 import * as productAction from "../../store/actions/products";
 import Input from "../../components/UI/Input";
-import { Keyboard } from "react-native";
+import colors from "../../constants/colors";
 
 
 const EditProductScreen = () => {
@@ -26,6 +26,9 @@ const EditProductScreen = () => {
     state.products.userProducts.find((item) => item.id === productId)
   );
   const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null); 
 
   React.useLayoutEffect(() => {
     setOptions({
@@ -48,29 +51,42 @@ const EditProductScreen = () => {
     description: editedProduct ? editedProduct.description : ""
   });
   
-  const {title, imageUrl, price, description} = formState
+  const {title, imageUrl, price, description} = formState;
 
-
-  const onSubmit = useCallback(() => {
-    console.log("submitting");
-    if (!title || !imageUrl || !price || !description) {
-      Alert.alert('Wrong input!', 'Please fill all fields', [{ text: 'Okay' }]);
-      return;
+  const onSubmit = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      if (!title || !imageUrl || !price || !description) {
+        Alert.alert('Wrong input!', 'Please fill all fields', [{ text: 'Okay' }]);
+        return;
+      }
+      const payload = {
+        title,
+        price: +price,
+        imageUrl,
+        description,
+      };
+      if (editedProduct) {
+        payload.id = productId;
+        await dispatch(productAction.updateProduct(payload));
+      } else {
+        await dispatch(productAction.createProduct(payload));
+      }
+      goBack();
+    } catch (error) {
+      console.log(error);
+      setError(error.message)
     }
-    const payload = {
-      title,
-      price: +price,
-      imageUrl,
-      description,
-    };
-    if (editedProduct) {
-      payload.id = productId;
-      dispatch(productAction.updateProduct(payload));
-    } else {
-      dispatch(productAction.createProduct(payload));
-    }
-    goBack();
+    setIsLoading(false);
+   
   }, [dispatch, title, productId, description, imageUrl, price]);
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An Error Occured!', error, [{ text: 'Okay' }]);
+    }
+  }, [error])
 
   useEffect(() => {
     setParams({ submit: onSubmit });
@@ -82,6 +98,15 @@ const EditProductScreen = () => {
       [field]: text
     })
   }
+
+  if (isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    )
+  }
+
 
   return (
     <KeyboardAvoidingView>
@@ -123,7 +148,11 @@ const styles = StyleSheet.create({
   form: {
     margin: 20,
   },
-
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems:'center'
+  }
 });
 
 export default EditProductScreen;

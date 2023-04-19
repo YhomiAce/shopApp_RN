@@ -3,6 +3,7 @@ import Product from "../../models/product.js";
 import {
   CREATE_PRODUCT,
   DELETE_PRODUCT,
+  FETCH_PRODUCTS,
   UPDATE_PRODUCT,
 } from "../actions/products.js";
 
@@ -14,6 +15,11 @@ const initialState = {
 const ProductReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case FETCH_PRODUCTS:
+      return {
+        availableProducts: payload,
+        userProducts: payload.filter((item) => item.ownerId === "u1"),
+      }
     case DELETE_PRODUCT:
       return {
         ...state,
@@ -27,7 +33,7 @@ const ProductReducer = (state = initialState, action) => {
     case CREATE_PRODUCT:
       console.log(payload);
       const newProduct = new Product(
-        new Date().toString(),
+        payload.id,
         "u1",
         payload.title,
         payload.imageUrl,
