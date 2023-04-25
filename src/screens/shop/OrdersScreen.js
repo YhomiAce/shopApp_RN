@@ -19,11 +19,18 @@ const OrdersScreen = () => {
     setLoading(true)
     loadOrders().then(() => setLoading(false));
   }, [dispatch])
-  console.log(orders);
+
   if(loading){
     return (
       <View style={styles.loader}>
         <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    )
+  }
+  if (orders.length === 0) {
+    return (
+      <View style={styles.loader}>
+        <Text>No Orders Available</Text>
       </View>
     )
   }

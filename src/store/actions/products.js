@@ -8,9 +8,10 @@ export const FETCH_PRODUCTS = "FETCH_PRODUCTS";
 
 
 export const deleteProduct = (productId) => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
-      const response = await fetch(`${URL}/products/${productId}.json`, {
+      const token = getState().auth.token;
+      const response = await fetch(`${URL}/products/${productId}.json?auth=${token}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -20,7 +21,7 @@ export const deleteProduct = (productId) => {
         throw new Error('Something went wrong')
       }
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       dispatch({
         type: DELETE_PRODUCT,
         payload:{id: productId},
@@ -32,25 +33,28 @@ export const deleteProduct = (productId) => {
 };
 
 export const createProduct = (payload) => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     try {
-      const response = await fetch(`${URL}/products.json`, {
+      const token = getState().auth.token;
+      const userId = getState().auth.userId;
+      const response = await fetch(`${URL}/products.json?auth=${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({...payload, ownerId: userId})
       });
       if (!response.ok) {
         throw new Error('Something went wrong')
       }
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       dispatch({
         type: CREATE_PRODUCT,
         payload: {
           ...payload,
-          id: result.name
+          id: result.name,
+          ownerId: userId
         },
       });
     } catch (error) {
@@ -60,9 +64,10 @@ export const createProduct = (payload) => {
 };
 
 export const updateProduct = (payload) => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
     try {
-      const response = await fetch(`${URL}/products/${payload.id}.json`, {
+      const response = await fetch(`${URL}/products/${payload.id}.json?auth=${token}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -73,7 +78,7 @@ export const updateProduct = (payload) => {
         throw new Error('Something went wrong')
       }
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
       dispatch({
         type: UPDATE_PRODUCT,
         payload,
@@ -85,8 +90,9 @@ export const updateProduct = (payload) => {
 };
 
 export const fetchProducts = () => {
-  return async dispatch  => {
+  return async (dispatch, getState)  => {
     try {
+      const userId = getState().auth.userId;
       const response = await fetch(`${URL}/products.json`);
       if (!response.ok) {
         throw new Error('Something went wrong')
@@ -95,12 +101,15 @@ export const fetchProducts = () => {
       const loadedProducts = [];
 
       for(const key in result){
-        loadedProducts.push(new Product(key, 'u1', result[key].title, result[key].imageUrl, result[key].description, result[key].price))
+        loadedProducts.push(new Product(key, result[key].ownerId, result[key].title, result[key].imageUrl, result[key].description, result[key].price))
       }
-      console.log(result);
+      // console.log(result);
       dispatch({
           type: FETCH_PRODUCTS,
-          payload: loadedProducts,
+          payload: {
+            loadedProducts,
+            userProducts: loadedProducts.filter(item => item.ownerId === userId)
+          },
       })
     } catch (error) {
       console.log(error);

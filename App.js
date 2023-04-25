@@ -1,11 +1,10 @@
 import "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import store from "./src/store/store";
-import ShopNavigation from "./src/navigation/ShopNavigation";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import MainNavigation from "./src/navigation";
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -16,6 +15,8 @@ const fetchFonts = () => {
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
+ 
+
   if (!fontLoaded) {
     return (
       <AppLoading
@@ -26,11 +27,11 @@ export default function App() {
     );
   }
 
+  
+
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <ShopNavigation />
-      </NavigationContainer>
+     <MainNavigation />
     </Provider>
   );
 }

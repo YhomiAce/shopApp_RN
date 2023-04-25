@@ -1,4 +1,4 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import React from "react";
 import OrderStackNavigator from "./OrderStack";
 import colors from "../constants/colors";
@@ -6,10 +6,12 @@ import { Platform } from "react-native";
 import ProductsOverviewScreen from "../screens/shop/ProductsOverviewScreen";
 import { Ionicons } from "@expo/vector-icons";
 import UserProductsScreen from "../screens/user/UserProductsScreen";
+import DrawerActionButton from "../components/UI/DrawerActionButton";
 
 const DrawerStack = createDrawerNavigator();
 
 const DrawerNavigation = () => {
+  
   const defaultNavOptions = {
     headerStyle: {
       backgroundColor: Platform.OS === "android" ? colors.primary : "",
@@ -23,7 +25,15 @@ const DrawerNavigation = () => {
     },
   };
   return (
-    <DrawerStack.Navigator screenOptions={{ ...defaultNavOptions }}>
+    <DrawerStack.Navigator screenOptions={{
+      ...defaultNavOptions, drawerContentStyle: {
+        flexDirection: "column-reverse",
+      },
+    }} drawerContent={props => {
+      return (
+        <DrawerActionButton {...props} />
+      )
+    }}>
       <DrawerStack.Screen
         name="All Products"
         component={ProductsOverviewScreen}

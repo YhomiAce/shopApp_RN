@@ -8,8 +8,8 @@ import {
 } from "../actions/products.js";
 
 const initialState = {
-  availableProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter((item) => item.ownerId === "u1"),
+  availableProducts: [],
+  userProducts: [],
 };
 
 const ProductReducer = (state = initialState, action) => {
@@ -17,8 +17,8 @@ const ProductReducer = (state = initialState, action) => {
   switch (type) {
     case FETCH_PRODUCTS:
       return {
-        availableProducts: payload,
-        userProducts: payload.filter((item) => item.ownerId === "u1"),
+        availableProducts: payload.loadedProducts,
+        userProducts: payload.userProducts,
       }
     case DELETE_PRODUCT:
       return {
@@ -34,7 +34,7 @@ const ProductReducer = (state = initialState, action) => {
       console.log(payload);
       const newProduct = new Product(
         payload.id,
-        "u1",
+        payload.ownerId,
         payload.title,
         payload.imageUrl,
         payload.description,

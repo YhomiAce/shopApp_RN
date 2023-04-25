@@ -1,4 +1,4 @@
-import { Alert, Text, FlatList, Button, Platform } from "react-native";
+import { Alert, Text, FlatList, Button, Platform, View, StyleSheet } from "react-native";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductItem from "../../components/shop/ProductItem";
@@ -41,6 +41,14 @@ const UserProductsScreen = () => {
       },
     ]);
   };
+
+  if (userProducts.length === 0) {
+    return (
+      <View style={styles.loader}>
+        <Text>No Product Found, Start creating some</Text>
+      </View>
+    )
+  }
   return (
     <FlatList
       data={userProducts}
@@ -64,5 +72,13 @@ const UserProductsScreen = () => {
     />
   );
 };
+
+const styles = StyleSheet.create({
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems:'center'
+  }
+});
 
 export default UserProductsScreen;
